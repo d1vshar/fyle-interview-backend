@@ -1,7 +1,9 @@
 from marshmallow import Schema, EXCLUDE, fields, post_load
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema, auto_field
 from marshmallow_enum import EnumField
+from marshmallow.validate import OneOf, Email
 from core.models.assignments import Assignment, GradeEnum
+from core.models.users import User
 from core.libs.helpers import GeneralObject
 
 
@@ -31,6 +33,50 @@ class AssignmentSubmitSchema(Schema):
 
     id = fields.Integer(required=True, allow_none=False)
     teacher_id = fields.Integer(required=True, allow_none=False)
+
+    @post_load
+    def initiate_class(self, data_dict, many, partial):
+        # pylint: disable=unused-argument,no-self-use
+        return GeneralObject(**data_dict)
+
+class AssignmentGradeSchema(Schema):
+    class Meta:
+        unknown = EXCLUDE
+
+    id = fields.Integer(required=True, allow_none=False)
+    grade = fields.Str(required=True, allow_none=False, validate=OneOf(['A', 'B', 'C', 'D']))
+
+    @post_load
+    def initiate_class(self, data_dict, many, partial):
+        # pylint: disable=unused-argument,no-self-use
+        return GeneralObject(**data_dict)
+
+class UserSchema(Schema):
+    id = fields.Integer(required=False, allow_none=True)
+    username = fields.Str(required=True)
+    email = fields.Str(required=True)
+    
+    @post_load
+    def initiate_class(self, data_dict, many, partial):
+        # pylint: disable=unused-argument,no-self-use
+        return User(**data_dict)
+
+class UserSearchIdSchema(Schema):
+    class Meta:
+        unknown = EXCLUDE
+
+    id = fields.Integer(required=True, allow_none=False)
+
+    @post_load
+    def initiate_class(self, data_dict, many, partial):
+        # pylint: disable=unused-argument,no-self-use
+        return GeneralObject(**data_dict)
+
+class UserSearchEmailSchema(Schema):
+    class Meta:
+        unknown = EXCLUDE
+
+    email = fields.Str(required=True, allow_none=False, validate=Email())
 
     @post_load
     def initiate_class(self, data_dict, many, partial):
