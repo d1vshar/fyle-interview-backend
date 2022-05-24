@@ -14,7 +14,6 @@ def get_user_by_id(incoming_payload):
     """Returns user by id"""
     user_search_payload = UserSearchIdSchema().load(incoming_payload)
     user = User.get_by_id(user_search_payload.id)
-    print(user)
     user_dump = UserSchema().dump(user)
     return APIResponse.respond(data=user_dump)
 
@@ -24,7 +23,6 @@ def get_user_by_email(incoming_payload):
     """Returns user by id"""
     user_search_payload = UserSearchEmailSchema().load(incoming_payload)
     user = User.get_by_email(user_search_payload.email)
-    print(user)
     user_dump = UserSchema().dump(user)
     return APIResponse.respond(data=user_dump)
 

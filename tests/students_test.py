@@ -53,8 +53,6 @@ def test_post_update_assignment_student_1(client, h_student_1):
             'content': content
         })
     
-    print(response)
-
     assert response.status_code == 200
 
     data = response.json['data']
